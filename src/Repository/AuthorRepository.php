@@ -16,6 +16,18 @@ class AuthorRepository extends ServiceEntityRepository
         parent::__construct($registry, Author::class);
     }
 
+    public function findAllPageWithPagination(int $page, int $limit): array
+{
+    return $this->createQueryBuilder('a')
+        ->leftJoin('a.books', 'b')
+        ->addSelect('b') // ← charge les livres en même temps
+        ->setFirstResult(($page - 1) * $limit)
+        ->setMaxResults($limit)
+        ->getQuery()
+        ->getResult();
+}
+
+
     //    /**
     //     * @return Author[] Returns an array of Author objects
     //     */

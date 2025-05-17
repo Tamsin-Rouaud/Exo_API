@@ -16,6 +16,18 @@ class BookRepository extends ServiceEntityRepository
         parent::__construct($registry, Book::class);
     }
 
+    public function findAllPageWithPagination($page, $limit)
+{
+    return $this->createQueryBuilder('b')
+        ->leftJoin('b.author', 'a')
+        ->addSelect('a') // ← force Doctrine à charger l’auteur en une seule requête
+        ->setFirstResult(($page - 1) * $limit)
+        ->setMaxResults($limit)
+        ->getQuery()
+        ->getResult();
+}
+
+
     //    /**
     //     * @return Book[] Returns an array of Book objects
     //     */
